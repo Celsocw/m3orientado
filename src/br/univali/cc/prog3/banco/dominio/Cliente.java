@@ -5,7 +5,7 @@ import br.univali.cc.prog3.banco.utilitario.ValidaCPF;
 public class Cliente {
     private String nome;
     private String cpf;
-    
+
     public Cliente(String nome, String cpf) {
         if (!ValidaCPF.validarCPF(cpf)) {
             throw new IllegalArgumentException("CPF inválido");
@@ -13,21 +13,21 @@ public class Cliente {
         this.nome = nome;
         this.cpf = cpf;
     }
-    
-    public String getNome() {
+
+    public String obter_nome() {
         return nome;
     }
-    
-    public String getCpf() {
+
+    public String obter_cpf() {
         return cpf;
     }
-    
-    public String getCpfFormatado() {
+
+    public String obter_cpf_formatado() {
         return ValidaCPF.formatarCPF(cpf);
     }
-    
+
     @Override
     public String toString() {
-        return nome + " (CPF: " + getCpfFormatado() + ")";
+        return nome + " (CPF: " + obter_cpf_formatado() + ")";
     }
 }

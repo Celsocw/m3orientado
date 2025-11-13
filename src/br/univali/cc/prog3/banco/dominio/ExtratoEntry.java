@@ -4,39 +4,39 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ExtratoEntry {
-    private LocalDateTime dataHora;
+    private LocalDateTime data_hora;
     private String descricao;
     private double valor;
     private char tipo;
-    
+
     public ExtratoEntry(String descricao, double valor, char tipo) {
-        this.dataHora = LocalDateTime.now();
+        this.data_hora = LocalDateTime.now();
         this.descricao = descricao;
         this.valor = valor;
         this.tipo = tipo;
     }
-    
-    public LocalDateTime getDataHora() {
-        return dataHora;
+
+    public LocalDateTime obter_data_hora() {
+        return data_hora;
     }
-    
-    public String getDescricao() {
+
+    public String obter_descricao() {
         return descricao;
     }
-    
-    public double getValor() {
+
+    public double obter_valor() {
         return valor;
     }
-    
-    public char getTipo() {
+
+    public char obter_tipo() {
         return tipo;
     }
-    
+
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        String dataFormatada = dataHora.format(formatter);
-        String tipoStr = (tipo == 'C') ? "C" : "D";
-        return String.format("[%s] (%s) %s R$ %.2f", dataFormatada, tipoStr, descricao, valor);
+        String data_formatada = data_hora.format(formatter);
+        String tipo_str = (tipo == 'C') ? "C" : "D";
+        return String.format("[%s] (%s) %s R$ %.2f", data_formatada, tipo_str, descricao, valor);
     }
 }

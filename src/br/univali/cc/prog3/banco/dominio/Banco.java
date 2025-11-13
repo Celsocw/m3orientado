@@ -1,6 +1,5 @@
 package br.univali.cc.prog3.banco.dominio;
 
-import br.univali.cc.prog3.banco.excecao.BancoException;
 import br.univali.cc.prog3.banco.excecao.ContaDuplicadaException;
 import br.univali.cc.prog3.banco.excecao.ContaInexistenteException;
 import br.univali.cc.prog3.banco.excecao.SaldoInsuficienteException;
@@ -13,80 +12,41 @@ public class Banco {
     private String slogan;
     private int numero;
     private Map<Integer, ContaBancaria> contas;
-    private int numeroContaSequencial;
+    private int numero_conta_sequencial;
 
     public Banco(String nome, String slogan, int numero) {
         this.nome = nome;
         this.slogan = slogan;
         this.numero = numero;
         this.contas = new HashMap<>();
-        this.numeroContaSequencial = 1;
+        this.numero_conta_sequencial = 1;
     }
 
-    /**
-     * Cria uma conta corrente sem limite especial
-     * @param numeroConta Número da conta a ser criado
-     * @param saldoInicial Saldo inicial da conta
-     * @param cliente Titular da conta
-     * @throws ContaDuplicadaException se já existir uma conta com o mesmo número
-     * @throws ValorNegativoException se o saldo inicial for negativo
-     */
-    public void criarConta(int numeroConta, double saldoInicial, Cliente cliente)
+    public void criar_conta(int numero_conta, double saldo_inicial, Cliente cliente)
             throws ContaDuplicadaException, ValorNegativoException {
-
-        // 1. Descobrir o erro - verificar se valor é negativo
-        if (saldoInicial < 0) {
-            // 2. Lançar a exceção
+        if (saldo_inicial < 0) {
             throw new ValorNegativoException("Saldo inicial não pode ser negativo");
         }
-
-        // 1. Descobrir o erro - verificar se conta já existe
-        if (contas.containsKey(numeroConta)) {
-            // 2. Lançar a exceção
-            throw new ContaDuplicadaException("Já existe uma conta com o número " + numeroConta);
+        if (contas.containsKey(numero_conta)) {
+            throw new ContaDuplicadaException("Já existe uma conta com o número " + numero_conta);
         }
-
-        // Criar conta corrente sem limite
-        ContaCorrente novaConta = new ContaCorrente(numeroConta, saldoInicial, cliente);
-        contas.put(numeroConta, novaConta);
+        ContaCorrente nova_conta = new ContaCorrente(numero_conta, saldo_inicial, cliente);
+        contas.put(numero_conta, nova_conta);
     }
 
-    /**
-     * Cria uma conta corrente com limite especial
-     * @param numeroConta Número da conta a ser criado
-     * @param saldoInicial Saldo inicial da conta
-     * @param limite Limite de crédito da conta
-     * @param cliente Titular da conta
-     * @throws ContaDuplicadaException se já existir uma conta com o mesmo número
-     * @throws ValorNegativoException se o saldo inicial ou limite for negativo
-     */
-    public void criarConta(int numeroConta, double saldoInicial, double limite, Cliente cliente)
+    public void criar_conta(int numero_conta, double saldo_inicial, double limite, Cliente cliente)
             throws ContaDuplicadaException, ValorNegativoException {
-
-        // 1. Descobrir o erro - verificar se valores são negativos
-        if (saldoInicial < 0 || limite < 0) {
-            // 2. Lançar a exceção
+        if (saldo_inicial < 0 || limite < 0) {
             throw new ValorNegativoException("Saldo inicial e limite não podem ser negativos");
         }
-
-        // 1. Descobrir o erro - verificar se conta já existe
-        if (contas.containsKey(numeroConta)) {
-            // 2. Lançar a exceção
-            throw new ContaDuplicadaException("Já existe uma conta com o número " + numeroConta);
+        if (contas.containsKey(numero_conta)) {
+            throw new ContaDuplicadaException("Já existe uma conta com o número " + numero_conta);
         }
-
-        // Criar conta corrente com limite
-        ContaCorrente novaConta = new ContaCorrente(numeroConta, saldoInicial, cliente, limite);
-        contas.put(numeroConta, novaConta);
+        ContaCorrente nova_conta = new ContaCorrente(numero_conta, saldo_inicial, cliente, limite);
+        contas.put(numero_conta, nova_conta);
     }
 
-    /**
-     * Localiza uma conta pelo número
-     * @param numero Número da conta
-     * @return ContaBancaria encontrada
-     * @throws ContaInexistenteException se a conta não existir
-     */
-    private ContaBancaria localizarConta(int numero) throws ContaInexistenteException {
+    private ContaBancaria localizar_conta(int numero) throws ContaInexistenteException {
         ContaBancaria conta = contas.get(numero);
         if (conta == null) {
             throw new ContaInexistenteException("Conta " + numero + " não encontrada");
@@ -94,108 +54,57 @@ public class Banco {
         return conta;
     }
 
-    /**
-     * Realiza depósito em uma conta
-     * @param numero Número da conta
-     * @param valor Valor a ser depositado
-     * @throws ContaInexistenteException se a conta não existir
-     * @throws ValorNegativoException se o valor for negativo
-     */
     public void depositar(int numero, double valor)
             throws ContaInexistenteException, ValorNegativoException {
-
-        // 1. Descobrir o erro - verificar se valor é negativo
         if (valor <= 0) {
-            // 2. Lançar a exceção
             throw new ValorNegativoException("Valor para depósito deve ser positivo");
         }
-
-        ContaBancaria conta = localizarConta(numero);
+        ContaBancaria conta = localizar_conta(numero);
         conta.depositar(valor);
     }
 
-    /**
-     * Realiza saque em uma conta
-     * @param numero Número da conta
-     * @param valor Valor a ser sacado
-     * @throws ContaInexistenteException se a conta não existir
-     * @throws ValorNegativoException se o valor for negativo
-     * @throws SaldoInsuficienteException se não houver saldo suficiente
-     */
     public void sacar(int numero, double valor)
             throws ContaInexistenteException, ValorNegativoException, SaldoInsuficienteException {
-
-        // 1. Descobrir o erro - verificar se valor é negativo
         if (valor <= 0) {
-            // 2. Lançar a exceção
             throw new ValorNegativoException("Valor para saque deve ser positivo");
         }
-
-        ContaBancaria conta = localizarConta(numero);
-
-        // 1. Descobrir o erro - verificar se há saldo suficiente
+        ContaBancaria conta = localizar_conta(numero);
         if (!conta.sacar(valor)) {
-            // 2. Lançar a exceção
             throw new SaldoInsuficienteException("Saldo insuficiente para saque de R$ " + String.format("%.2f", valor));
         }
     }
 
-    /**
-     * Realiza transferência entre contas
-     * @param numeroOrigem Número da conta de origem
-     * @param numeroDestino Número da conta de destino
-     * @param valor Valor a ser transferido
-     * @throws ContaInexistenteException se uma das contas não existir
-     * @throws ValorNegativoException se o valor for negativo
-     * @throws SaldoInsuficienteException se não houver saldo suficiente na conta de origem
-     */
-    public void transferir(int numeroOrigem, int numeroDestino, double valor)
+    public void transferir(int numero_origem, int numero_destino, double valor)
             throws ContaInexistenteException, ValorNegativoException, SaldoInsuficienteException {
-
-        // 1. Descobrir o erro - verificar se valor é negativo
         if (valor <= 0) {
-            // 2. Lançar a exceção
             throw new ValorNegativoException("Valor para transferência deve ser positivo");
         }
-
-        // Verificar se contas existem
-        ContaBancaria origem = localizarConta(numeroOrigem);
-        ContaBancaria destino = localizarConta(numeroDestino);
-
-        // 1. Descobrir o erro - verificar se há saldo suficiente na origem
+        ContaBancaria origem = localizar_conta(numero_origem);
+        ContaBancaria destino = localizar_conta(numero_destino);
         if (!origem.sacar(valor)) {
-            // 2. Lançar a exceção
             throw new SaldoInsuficienteException("Saldo insuficiente para transferência de R$ " + String.format("%.2f", valor));
         }
-
-        // Se saque foi bem-sucedido, depositar no destino
         destino.depositar(valor);
     }
 
-    /**
-     * Emite extrato de uma conta
-     * @param numero Número da conta
-     * @return String com o extrato da conta
-     * @throws ContaInexistenteException se a conta não existir
-     */
-    public String emitirExtrato(int numero) throws ContaInexistenteException {
-        ContaBancaria conta = localizarConta(numero);
-        return conta.emitirExtrato();
+    public String emitir_extrato(int numero) throws ContaInexistenteException {
+        ContaBancaria conta = localizar_conta(numero);
+        return conta.emitir_extrato();
     }
 
-    public String getNome() {
+    public String obter_nome() {
         return nome;
     }
 
-    public String getSlogan() {
+    public String obter_slogan() {
         return slogan;
     }
 
-    public int getNumero() {
+    public int obter_numero() {
         return numero;
     }
 
-    public Map<Integer, ContaBancaria> getContas() {
-        return new HashMap<>(contas); // Retorna cópia para evitar modificações externas
+    public Map<Integer, ContaBancaria> obter_contas() {
+        return new HashMap<>(contas);
     }
 }
