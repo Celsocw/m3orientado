@@ -11,7 +11,7 @@ public class ContaPoupanca extends ContaBancaria {
         if (saldo > 0) {
             double rendimento = saldo * RENDIMENTO_MENSAL;
             saldo += rendimento;
-            adicionarExtrato("Rendimento mensal", rendimento, 'C');
+            adicionar_extrato("Rendimento mensal", rendimento, 'C');
         }
     }
     
@@ -20,18 +20,18 @@ public class ContaPoupanca extends ContaBancaria {
     }
     
     @Override
-    protected boolean podeSacar(double valor) {
+    protected boolean pode_sacar(double valor) {
         return saldo >= valor;
     }
     
     @Override
-    protected String getTipoConta() {
+    protected String obter_tipo_conta() {
         return "CONTA POUPANÇA";
     }
     
     @Override
-    public String emitirExtrato() {
-        String extrato = super.emitirExtrato();
+    public String emitir_extrato() {
+        String extrato = super.emitir_extrato();
         extrato += "\nTAXA DE RENDIMENTO MENSAL: " + String.format("%.2f", getRendimentoMensal()) + "%";
         return extrato;
     }
