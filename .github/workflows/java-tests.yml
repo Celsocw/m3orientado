@@ -1,0 +1,38 @@
+name: Java Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Compile Java code
+      run: |
+        javac -cp src src/br/univali/cc/prog3/banco/dominio/*.java \
+                     src/br/univali/cc/prog3/banco/excecao/*.java \
+                     src/br/univali/cc/prog3/banco/utilitario/*.java \
+                     src/TesteSistemaBancario.java
+
+    - name: Run tests
+      run: java -cp src TesteSistemaBancario
+
+    - name: Run simple example
+      run: |
+        javac -cp src src/br/univali/cc/prog3/banco/dominio/*.java \
+                     src/br/univali/cc/prog3/banco/excecao/*.java \
+                     src/br/univali/cc/prog3/banco/utilitario/*.java \
+                     src/ExemploSimples.java
+        java -cp src ExemploSimples
